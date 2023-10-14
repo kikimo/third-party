@@ -2,3 +2,33 @@
 	path = folly
 	url = https://github.com/facebook/folly.git
     branch = v2023.10.09.00
+[submodule "double-conversion"]
+	path = double-conversion
+	url = https://github.com/google/double-conversion.git
+[submodule "lz4"]
+	path = lz4
+	url = https://github.com/lz4/lz4.git
+[submodule "libevent"]
+	path = libevent
+	url = https://github.com/libevent/libevent.git
+[submodule "libsodium"]
+	path = libsodium
+	url = https://github.com/jedisct1/libsodium.git
+[submodule "zstd"]
+	path = zstd
+	url = https://github.com/facebook/zstd.git
+[submodule "openssl"]
+	path = openssl
+	url = https://github.com/openssl/openssl.git
+[submodule "glog"]
+	path = glog
+	url = https://github.com/google/glog.git
+[submodule "gflags"]
+	path = gflags
+	url = https://github.com/gflags/gflags.git
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest.git
+[submodule "rocksdb"]
+	path = rocksdb
+	url = https://github.com/facebook/rocksdb.git
