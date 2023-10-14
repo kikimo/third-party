@@ -1,5 +1,6 @@
 OUTDIR:="build/mygraph"
 INSTALL_DIR=$(shell realpath $(OUTDIR))
+PROCS=$(shell nproc)
 
 all: gflags glog googletest double-conversion libevent lz4 zstd openssl folly rocksdb
 
@@ -14,7 +15,7 @@ gflags: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 
@@ -26,7 +27,7 @@ glog: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 googletest: presetup
@@ -37,7 +38,7 @@ googletest: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 double-conversion: presetup
@@ -48,7 +49,7 @@ double-conversion: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 libevent: presetup
@@ -59,23 +60,23 @@ libevent: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 lz4: presetup
 	cd $@ && \
-	make -j $(nproc) && \
+	make -j $(PROCS) && \
 	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
 zstd: presetup
 	cd $@ && \
-	make -j $(nproc) && \
+	make -j $(PROCS) && \
 	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
 openssl: presetup
 	cd $@ && \
 	./config && \
-	make -j $(nproc) && \
+	make -j $(PROCS) && \
 	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
 folly: presetup
@@ -86,7 +87,7 @@ folly: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) && \
+		make -j $(PROCS) && \
 		make install
 
 rocksdb: presetup
@@ -97,7 +98,7 @@ rocksdb: presetup
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
-		make -j $(nproc) rocksdb && \
+		make -j $(PROCS) rocksdb rocksdb-shared && \
 		make install/fast
 
 clean:
