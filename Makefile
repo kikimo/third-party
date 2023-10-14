@@ -74,6 +74,7 @@ zstd: presetup
 
 openssl: presetup
 	cd $@ && \
+	./config && \
 	make -j $(nproc) && \
 	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
