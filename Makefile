@@ -33,6 +33,7 @@ glog: presetup
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
 		-DCMAKE_CXX_STANDARD=17 \
+		-DBUILD_SHARED_LIBS=OFF \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
@@ -105,9 +106,9 @@ zstd: presetup
 
 openssl: presetup
 	cd $@ && \
-	./config && \
+	./config --prefix=$(INSTALL_DIR) && \
 	make -j $(PROCS) && \
-	make prefix=/ DESTDIR=$(INSTALL_DIR) install
+	make install
 
 jemalloc: presetup
 	cd $@ && \
