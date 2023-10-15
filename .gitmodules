@@ -32,3 +32,15 @@
 [submodule "rocksdb"]
 	path = rocksdb
 	url = https://github.com/facebook/rocksdb.git
+[submodule "fmt"]
+	path = fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "jemalloc"]
+	path = jemalloc
+	url = https://github.com/jemalloc/jemalloc.git
+[submodule "libunwind"]
+	path = libunwind
+	url = https://github.com/libunwind/libunwind.git
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib.git

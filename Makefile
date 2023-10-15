@@ -2,10 +2,17 @@ OUTDIR:="build/mygraph"
 INSTALL_DIR=$(shell realpath $(OUTDIR))
 PROCS=$(shell nproc)
 
-all: gflags glog googletest double-conversion libevent lz4 zstd openssl folly rocksdb
+all: gflags glog googletest double-conversion fmt libevent lz4 zstd openssl folly rocksdb jemalloc zlib boost_1_83_0
 
 presetup:
 	mkdir -p $(OUTDIR)
+	git submodule init
+
+zlib: presetup
+	cd $@ && \
+	./configure --prefix=/ && \
+	make -j $(PROCS) && \
+	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
 gflags: presetup
 	cd $@ && \
@@ -13,11 +20,11 @@ gflags: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
 		make install
-
 
 glog: presetup
 	cd $@ && \
@@ -25,6 +32,7 @@ glog: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
@@ -36,10 +44,30 @@ googletest: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
 		make install
+
+libunwind: presetup
+	cd $@ && \
+	autoreconf -i && \
+	./configure --prefix=/ && \
+	make -j $(PROCS) && \
+	make prefix=/ DESTDIR=$(INSTALL_DIR) install
+
+fmt: presetup
+	cd $@ && \
+	mkdir -p objs && \
+	cd objs && \
+	cmake -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
+		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
+		.. && \
+		make -j $(PROCS) fmt && \
+		make install/fast
 
 double-conversion: presetup
 	cd $@ && \
@@ -47,6 +75,7 @@ double-conversion: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
@@ -58,6 +87,7 @@ libevent: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
@@ -79,16 +109,28 @@ openssl: presetup
 	make -j $(PROCS) && \
 	make prefix=/ DESTDIR=$(INSTALL_DIR) install
 
+jemalloc: presetup
+	cd $@ && \
+	./autogen.sh --prefix=/ && \
+	make -j $(PROCS) && \
+	make prefix=/ DESTDIR=$(INSTALL_DIR) install
+
 folly: presetup
 	cd $@ && \
 	mkdir -p objs && \
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) && \
 		make install
+
+boost_1_83_0: presetup
+	cd $@ && \
+	./bootstrap.sh --with-libraries=context --prefix=$(INSTALL_DIR) && \
+	./b2 install
 
 rocksdb: presetup
 	cd $@ && \
@@ -96,6 +138,7 @@ rocksdb: presetup
 	cd objs && \
 	cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+		-DCMAKE_CXX_STANDARD=17 \
 		-DCMAKE_CXX_FLAGS="-I $(INSTALL_DIR)/include" \
 		.. && \
 		make -j $(PROCS) rocksdb rocksdb-shared && \
@@ -104,7 +147,7 @@ rocksdb: presetup
 clean:
 	rm -rf $(OUTDIR)
 
-.PHONY: presetup all clean gflags glog googletest double-conversion libevent lz4 zstd openssl folly rocksdb
+.PHONY: presetup all clean gflags glog googletest double-conversion libevent lz4 zstd openssl folly rocksdb fmt jemalloc zlib boost_1_83_0
 
 #		-DINCLUDE_DIRECTORIES=$(INSTALL_DIR)/include \
 #		-DLINK_DIRECTORIES=$(INSTALL_DIR)/lib \
